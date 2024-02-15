@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+</style>
+<body>
+  <div id="main">
+    <div class="left">
+      <a href="/">
+        <i class="ri-home-5-fill"></i>
+        <p>Home</p>
+      </a>
+      <a id="linksearch" href="">
+        <i class="ri-search-line"></i>
+        <p>Search</p>
+      </a>
+      <!-- <input type="text" placeholder="search">
+      <button onclick="searchSong()">search</button> -->
+
+      <form id="searchsongname" onsubmit="searchSong(event)" >
+        <input type="text" name="search" placeholder="search">
+        <button id="subnone" type="submit">submit</button>
+      </form>
+
+      <button id="newplaylist">
+        <i class="ri-play-list-fill"></i>
+        <p>playlist</p>
+    </button>
+
+    <a id="likedsongheart" href="/likedsong">
+      <i class="ri-heart-3-fill"></i>
+      <p>liked song</p>
+    </a>
+
+
+      <a href="/logout" id="logout">
+        <i class="ri-logout-box-line"></i>
+        <p>logout</p>
+      </a>
+    </div>
+
+    <!-- <h1>search</h1> -->
+
+
+    <div class="right">
+      <div class="musics">
+  
+      </div>
+
+      <audio src="/stream/" controls></audio>
+      
+    </div>
+  
+    <!-- <audio src="/stream/69b554779eb6502777e310ed0d0c41ff4ea78e35" controls></audio> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js" integrity="sha512-WrdC3CE9vf1nBf58JHepuWT4x24uTacky9fuzw2g/3L9JkihgwZ6Cfv+JGTtNyosOhEmttMtEZ6H3qJWfI7gIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        async function searchSong(e){
+          e.preventDefault()
+          const result = await axios.post('/search',{
+            search: document.querySelector('input').value
+        })
+console.log(document.querySelector('input').value)
+        let clutter = ''
+        result.data.songs.forEach(song => {
+        clutter += ` <div class="song" onclick="songCardClicked('${song.filename}')">
+          <img src="/poster/${song.poster}" alt="">
+          <div class="text">
+            <h5>${song.title}</h5>
+            <p>${song.artist}</p>
+            <p>${song.album}</p>
+          </div>
+
+          <div class="playButton">
+            <i class="ri-play-circle-fill"></i>
+          </div>
+        </div>`
+            
+        });
+        document.querySelector('.musics').innerHTML = clutter
+        }
+
+        function songCardClicked(filename) {
+      document.querySelector('audio').setAttribute('src', `/stream/${filename}`)
+      document.querySelector('audio').play()
+    }
+
+    </script>
+</body>
+</html>

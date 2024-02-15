@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <link href='https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css' rel='stylesheet'>
+  <link rel="stylesheet" href="../stylesheets/style.css">
+</head>
+<body>
+  <div id="main">
+    <div class="left">
+      <a href="/">
+        <i class="ri-home-5-fill"></i>
+        <p>Home</p>
+      </a>
+      <a id="linksearch" href="/search">
+        <i class="ri-search-line"></i>
+        <p>Search</p>
+      </a>
+   <button id="newplaylist">
+       <i class="ri-play-list-fill"></i>
+       <p>playlist</p>
+   </button>
+
+      <form id="playlistcreate" action="/createplaylist" method="post">
+        <input type="text" name="name" placeholder="listname">
+        <input id="listnone" type="submit" value="create">
+      </form>
+
+      <div class="play">
+        <ul>
+          <% playlists.forEach(function(playlist){ %>
+            <li>
+              <a href="/playlist/<%= playlist._id %>">
+                <i class="ri-arrow-right-double-line"></i>
+              <%=playlist.name%></a>
+          </li>
+          <%  }) %>
+        </ul>
+      </div>
+
+      <a id="likedsongheart" href="/likedsong">
+        <i class="ri-heart-3-fill"></i>
+        <p>liked song</p>
+      </a>
+       
+      <div id="recent">
+        <img src="https://cdn-icons-png.flaticon.com/512/461/461146.png" alt="">
+        <div class="inbox">
+          <h2>TITLE:</h2>
+          <h2>ARTIST:</h2>
+        </div>
+
+      </div>
+
+
+
+
+    
+      <a href="/logout" id="logout">
+        <i class="ri-logout-box-line"></i>
+        <p>logout</p>
+      </a>
+    </div>
+    <div class="right">
+      <div class="musics">
+        <% currentUser.playlist[0].songs.forEach(song=>{ %>
+        <div class="song" onclick="songCardClicked('<%= song.filename %>' , '<%= song.title %>','<%= song.album %>','<%= song.artist %>' ,'<%= song.poster %>')">
+          <img src="/poster/<%= song.poster %>" alt="">
+          <div class="text">
+            <h5><%= song.title %></h5>
+            <!-- <p><%= song.artist %></p> -->
+            <p> <%= song.album %></p>
+            <form action="/like/<%= song._id %>" method="post">
+              <button id="likedbut">
+                <% if(currentUser.liked.includes(song._id.toString())){ %>
+          
+                  <i style="color: red;" class="ri-heart-3-fill"></i>
+          
+                <% }else{ %>
+
+                  <i style="color: white;" class="ri-heart-3-fill"></i>
+                <% } %>
+              </button>
+             </form>
+          </div>
+          <div class="playButton">
+            <i class="ri-play-circle-fill"></i>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <audio src="/stream/" controls></audio>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    function songCardClicked(filename , title,album,artist,poster) {
+      document.querySelector('audio').setAttribute('src', `/stream/${filename}`)
+      document.querySelector('audio').play()
+
+
+      const songplay = document.getElementById('recent')
+      songplay.innerHTML = `<img src ="/poster/${poster}">
+      <div class="inbox">
+      <h2>TITLE: ${title}</h2>
+      <h2>ARTIST: ${artist}</h2>
+      </div>`
+    }
+
+
+
+    // function likedsong(filename){
+    //   // document.querySelector("#likedbut").addEventListener("click",function(){
+    //     document.querySelectorAll("#likedbut i").forEach(function(elem){
+    //       elem.addEventListener('click',function(){
+    //         elem.style.color = "red"
+    //     axios.get('/likedsong/${filename}')
+    //       })
+    //     })
+    //   // })
+    // }
+
+
+    // document.querySelector("#searchsongname").style.display = "none"
+
+    // document.querySelector("#linksearch").addEventListener('click',function(){
+
+       document.querySelector('#newplaylist').addEventListener("click",function(){
+         document.querySelector("#playlistcreate").style.display= "block"
+       })
+
+  </script>
+</body>
+
+</html>
